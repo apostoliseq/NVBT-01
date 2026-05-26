@@ -12,7 +12,6 @@
 </head>
 <body>
   <h1>Go API Frontend</h1>
-  <p>API is running on <code>localhost:8090</code></p>
 
   <button onclick="callHello()">GET /hello</button>
   <button onclick="callHeaders()">GET /headers</button>
@@ -21,11 +20,11 @@
 
   <script>
     async function callHello() {
-      const res = await fetch('http://localhost:8090/hello');
+      const res = await fetch('/hello');
       document.getElementById('output').textContent = await res.text();
     }
     async function callHeaders() {
-      const res = await fetch('http://localhost:8090/headers');
+      const res = await fetch('/headers');
       document.getElementById('output').textContent = await res.text();
     }
   </script>

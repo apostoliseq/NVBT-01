@@ -34,6 +34,7 @@ const data = await res.json();
     - **root /usr/share/nginx/html;** — The filesystem path nginx uses as *the base when looking for files to serve*. A request for `/index.html` resolves to `/usr/share/nginx/html/index.html` on disk.
     - **index index.html;** — When a request comes in for a directory (e.g. `/`), *nginx serves this file automatically*. Without it, a request to `/` would either show a directory listing or a 403 — depending on whether autoindex is on.
     - **location / {}** — A *routing rule* that matches every request path (since `/` is a prefix, it catches everything). More specific location blocks take priority over less specific ones.
+      - **proxy_pass** — Instead of serving a file from disk, *nginx forwards the request to another server and relays the response back to the client*. The client only ever talks to nginx; the upstream server is invisible to it.
     - **try_files $uri $uri/ =404;** — For each request, *nginx tries in order*:
       1. `$uri` — look for an exact *file* match (e.g. /about.html → looks for that file)
       2. `$uri/` — look for a *directory* with an index.html inside it

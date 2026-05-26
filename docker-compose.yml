@@ -2,10 +2,8 @@ services:
   app:
     image: golang:1.26.3-alpine3.23
     volumes:
-      - .:/workspace
-    command: sleep infinity
-    ports:
-      - "8090:8090"
+      - ./app:/workspace
+    command: sh -c "go run /workspace/app.go"
     networks:
       - dev
 
