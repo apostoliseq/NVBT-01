@@ -13,8 +13,13 @@
 <body>
   <h1>Go API Frontend</h1>
 
-  <button onclick="callHello()">GET /hello</button>
-  <button onclick="callHeaders()">GET /headers</button>
+  <div>
+    <button onclick="callHello()">GET /hello</button>
+    <button onclick="callHeaders()">GET /headers</button>
+
+    <button onclick="saveInput()">POST /save</button>
+    <input id="userInput" type="text" maxlength="50" placeholder="Alphanumeric only" />
+  </div>
 
   <pre id="output">Response will appear here...</pre>
 
@@ -25,6 +30,15 @@
     }
     async function callHeaders() {
       const res = await fetch('/headers');
+      document.getElementById('output').textContent = await res.text();
+    }
+    async function saveInput() {
+      const value = document.getElementById('userInput').value;
+      if (!/^[a-zA-Z0-9]+$/.test(value)) {
+        document.getElementById('output').textContent = 'Error: alphanumeric characters only.';
+        return;
+      }
+      const res = await fetch('/save', { method: 'POST', body: value });
       document.getElementById('output').textContent = await res.text();
     }
   </script>

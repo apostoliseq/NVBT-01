@@ -2,16 +2,29 @@
 
 - **name** — Display name shown in VS Code's UI (bottom-left corner, container picker). *Not essential*, cosmetic only.
 - **dockerComposeFile** — Tells VS Code to use Docker Compose instead of a single image/Dockerfile. The path is relative to devcontainer.json itself. *Essential* — this is what wires up the multi-container setup.
-- **service** — Which service inside the compose file VS Code should attach to (open a terminal in, run extensions in, mount your files into). Must match a service name in docker-compose.yml. *Essential* — without it VS Code doesn't know which container is "yours".
-- **workspaceFolder** — The path inside the container where VS Code opens. Must match where the volume is mounted in docker-compose.yml. *Essential* — if these disagree, VS Code opens to the wrong directory or fails to find your files.
+- **service** — Which service inside the compose file VS Code should attach to (open a terminal in, run extensions in, mount your files into). Must match a service name in docker-compose.yaml. *Essential* — without it VS Code doesn't know which container is "yours".
+- **workspaceFolder** — The path inside the container where VS Code opens. Must match where the volume is mounted in docker-compose.yaml. *Essential* — if these disagree, VS Code opens to the wrong directory or fails to find your files.
 - **shutdownAction** — What happens when you close the VS Code window. `stopCompose` stops all services in the compose file. The alternative is `none` (containers keep running). *Not essential*, but good hygiene — without it containers would keep running in the background after you close the window.
 - **customizations.vscode.extensions** — 
 Extensions VS Code automatically installs inside the container when it first builds. *Not strictly essential* (you could install it manually), but very convenient
 
+# api/go.mod
+
+- **go.mod** — Go's *dependency file*. Without it, `go run` only works for files that stick to the standard library. With it, Go knows to download external packages from the internet on first run. It declares:
+  - The module name
+  - The Go version
+  - External packages required
+
 # nginx/html/index.html
 
 - **fetch(url)** — a built-in browser function that sends an HTTP GET request to the given URL. It doesn't return the response immediately; it returns a *Promise* (a placeholder for a value that will arrive later).
+  - **fetch** takes an optional second argument — a config object.
 - **await** — pauses execution of this function *until the Promise resolves* (i.e., until the response arrives). The rest of the page keeps working normally; only this function is paused.
+- **!/^[a-zA-Z0-9]+$/.test(value)** — The *test() method of RegExp* instances executes a search with this regular expression for a match between a regular expression and a specified string. Returns true if there is a match; false otherwise.
+  - `^` — start of string
+  - `[a-zA-Z0-9]` — any single character that is a letter (upper or lower) or digit
+  - `+` — one or more of those characters (so empty string fails)
+  - `$` — end of string
 
 ```js
 // Fetch a Promise, but store it when its resolved to a Response
@@ -39,3 +52,7 @@ const data = await res.json();
       1. `$uri` — look for an exact *file* match (e.g. /about.html → looks for that file)
       2. `$uri/` — look for a *directory* with an index.html inside it
       3. `=404` — if neither exists, return a 404
+
+# docker-compose.yaml
+
+- **GOFLAGS: -mod=mod** — tells Go to *automatically download and update dependencies at runtime* without requiring a `go.sum` file to already exist. Without it, `go run` would refuse to start because it expects a `go.sum` (a lockfile that checksums all dependencies) but we haven't generated one yet. With `-mod=mod`, Go generates `go.sum` on the fly the first time it downloads `lib/pq`. Once that happens, you could remove the flag and commit `go.sum` to your repo.

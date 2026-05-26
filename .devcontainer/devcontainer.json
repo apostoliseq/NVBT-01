@@ -1,6 +1,6 @@
 {
   "name": "NVBT-01",
-  "dockerComposeFile": "../docker-compose.yml",
+  "dockerComposeFile": "../docker-compose.yaml",
   "service": "app", 
   "workspaceFolder": "/workspace",
   "shutdownAction": "stopCompose",
